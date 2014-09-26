@@ -36,6 +36,10 @@ Fputs constructor, return an Fputs that flushes to the writable.
 Writable can be an object with a write(text, callback) method, or a
 string filename.
 
+Options:
+        writemode:   file open mode to use with a filename writable, default 'a'
+        writesize:   number of chars to write per chunk, default 200k
+
 ### fputs(line)
 
 Append the line to the file.  If the line is not already newline terminated,
@@ -64,7 +68,11 @@ Wait for all buffered data to be written.
 
 The included FileWriter class is designed for shared streaming data logging.
 Writes are made under an exclusive flock advisory lock, and the file is
-reopened frequently to allow the logfile to be removed for furthe processing.
+reopened frequently to allow the logfile to be removed for further processing.
+
+On initial open the specified openmode is used.  File handles are used for at
+most .05 seconds, then are reopened.  On reopen, files opened 'w' or 'w+' are
+reopened 'r+' to not overwrite the already written contents.
 
 #### new Fputs.FileWriter(filename, openmode)
 
