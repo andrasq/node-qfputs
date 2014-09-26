@@ -46,6 +46,9 @@ it will get a newline appended.
 Append the text to the file.  Newline termination is presumed, but not checked.
 This call is intended for bulk transport of newline delimited data.
 
+The callback is called as soon as the data is buffered, not when written.
+Use fflush() to test for write errors.
+
 ### drain([maxUnwritten], callback)
 
 Wait for the un-written buffered data to shrink to no more than maxUnwritten
@@ -74,3 +77,5 @@ Create a FileWriter.
 #### write(string, callback)
 
 Write the text to the file, and call callback when done.
+
+Unlinke Fputs write, the FileWriter callback is called after the write completes.
