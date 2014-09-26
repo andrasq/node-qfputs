@@ -1,0 +1,35 @@
+{
+  "name": "qfputs",
+  "version": "0.8.0",
+  "description": "fast bufferd line-at-a-time output",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andrasq/node-qfputs"
+  },
+  "homepage": "https://github.com/andrasq/node-qfputs",
+  "main": "index.js",
+  "author": {
+    "name": "Andras",
+    "url": "http://github.com/andrasq"
+  },
+  "engines": {
+    "node": ">=0.0.0"
+  },
+  "scripts": {
+    "test": "nodeunit"
+  },
+  "keywords": [
+    "fputs",
+    "buffered",
+    "line",
+    "output",
+    "text"
+  ],
+  "dependencies": {
+    "fs-ext": "*"
+  },
+  "devDependencies": {
+    "nodeunit": "*"
+  }
+}
