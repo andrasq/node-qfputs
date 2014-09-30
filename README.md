@@ -28,9 +28,14 @@ throughputs of over 800k 200-char lines / sec saved to disk.
         });
 
 ----
+## Installing
+
+`npm install git://github.com/andrasq/node-qfputs`
+`npm test qfputs`
+
 ## Methods
 
-### new Fputs(writable, opts)
+### new Fputs(writable, options)
 
 Fputs constructor, return an Fputs that flushes to the writable.
 Writable can be an object with a write(text, callback) method, or a
@@ -87,3 +92,7 @@ Create a FileWriter.
 Write the text to the file, and call callback when done.
 
 Unlinke Fputs write, the FileWriter callback is called after the write completes.
+
+## Notes
+
+- The included Fputs.FileWriter depends on `fs-ext`, which is a C++ extension

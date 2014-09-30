@@ -139,7 +139,6 @@ module.exports = {
         t.expect(2);
         var self = this;
         this.fp.fflush(function(err) {
-            // nodeunit FIXIT: an error thrown here yields "Undone tests" but is not displayed
             t.ifError(err);
             var contents = "" + self.writer.getContents(tempfile);
             t.equals(contents, expect);
