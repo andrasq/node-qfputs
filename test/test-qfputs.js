@@ -12,7 +12,9 @@ function uniqid( ) {
 
 module.exports = {
     setUp: function(cb) {
-        var tempfile = this.tempfile = "/tmp/nodeunit-" + process.pid + ".tmp";
+        var tempfile = "/tmp/nodeunit-" + process.pid + ".tmp";
+        try { fs.unlinkSync(tempfile); } catch (e) {}
+        this.tempfile = tempfile;
         this.mockWriter = {
             written: [],
             write: function(str, cb) { this.written.push(str); cb(); },
@@ -22,7 +24,7 @@ module.exports = {
         };
 
         this.fileWriter = new Fputs.FileWriter(tempfile, "a");
-        this.fileWriter.getContents = function() { return "" + fs.readFileSync(tempfile); }
+        this.fileWriter.getContents = function() { return "" + fs.readFileSync(this.tempfile); }
 
         this.writer = this.mockWriter;
         this.fp = new Fputs(this.writer);
@@ -33,6 +35,16 @@ module.exports = {
     tearDown: function(cb) {
         try { fs.unlinkSync(this.tempfile); } catch (e) {}
         cb();
+    },
+
+    'fputs should lazy create the logfile': function(t) {
+        var fp = new Fputs(this.tempfile);
+        t.expect(1);
+        try {
+            fs.statSync(this.tempfile);
+            t.ok(false, "logfile should not exist yet");
+        } catch (err) { t.ok(true); }
+        t.done();
     },
 
     'fputs should write contents soon': function(t) {

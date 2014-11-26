@@ -36,7 +36,7 @@ throughputs of over 800k / sec mutexed 200-char lines saved to disk.
 ----
 ## Methods
 
-### new Fputs( writable, options )
+### new Fputs( writable, [options] )
 
 Fputs constructor, return an Fputs that flushes to the writable.
 Writable can be an object with a write(text, callback) method, or a
@@ -56,6 +56,7 @@ it will get a newline appended.
 
 Append the string to the file.  Newline termination is presumed, but not checked.
 This call is intended for bulk transport of newline delimited data.
+The caller is responsible for splitting the bulk data on line boundaries.
 
 The callback is called as soon as the data is buffered, not when written.
 Use fflush() to test for write errors.
@@ -65,9 +66,15 @@ Use fflush() to test for write errors.
 Wait for the un-written buffered data to shrink to no more than maxUnwritten
 chars.  If maxUnwritten is omitted, the built-in default of 400 KB is used.
 
-### fflush( callback )
+If write errors occurred since the last call to fflush or drain, the callback
+will be called with first write error, the error state cleared.
+
+### fflush( callback(error) )
 
 Wait for all buffered data to be written.
+
+If write errors occurred since the last call to fflush or drain, the callback
+will be called with first write error, and the error state cleared.
 
 ## Helper Classes
 
