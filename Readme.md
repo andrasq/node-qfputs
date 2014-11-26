@@ -39,8 +39,8 @@ throughputs of over 800k / sec mutexed 200-char lines saved to disk.
 ### new Fputs( writable, [options] )
 
 Fputs constructor, return an Fputs that flushes to the writable.
-Writable can be an object with a write(text, callback) method, or a
-string filename.
+Writable can be an object with a `write(text, callback)` method, or a
+string filename.  If a string, an Fputs.FileWriter will be used (see below).
 
 Options:
 
@@ -52,16 +52,17 @@ Options:
 Append the line to the file.  If the line is not already newline terminated,
 it will get a newline appended.
 
-### write( string, callback )
+### write( string, [callback()] )
 
 Append the string to the file.  Newline termination is presumed, but not checked.
 This call is intended for bulk transport of newline delimited data.
 The caller is responsible for splitting the bulk data on line boundaries.
 
-The callback is called as soon as the data is buffered, not when written.
-Use fflush() to test for write errors.
+The callback is optional.  If provided, it is called as soon as the data
+is buffered, not when actually written.  Use fflush() to wait for the
+write to complete and check for errors.
 
-### drain( [maxUnwritten], callback )
+### drain( [maxUnwritten], callback(error) )
 
 Wait for the un-written buffered data to shrink to no more than maxUnwritten
 chars.  If maxUnwritten is omitted, the built-in default of 400 KB is used.
@@ -88,18 +89,21 @@ On initial open the specified openmode is used.  File handles are used for at
 most .05 seconds, then are reopened.  On reopen, files initially opened 'w' or
 'w+' are reopened 'r+' to not overwrite the just written contents.
 
-#### new Fputs.FileWriter( filename, openmode )
+#### new Fputs.FileWriter( filename, [openmode] )
 
-Create a FileWriter.
+Create a FileWriter that will append the named file.  The file is "lazy"
+created/opened on first access.  The default openmode is 'a', append-only.
 
         var Fputs = require('qfputs');
         var fp = new Fputs(new Fputs.FileWriter("out", "a"));
 
         fp.fputs("Hello, line!\n");
 
-#### write( string, callback )
+#### write( string, callback(error, numBytes) )
 
-Write the text to the file, and call callback when done.
+Write the text to the file, and call callback when done.  Writes are done
+under an exclusive write lock, `flock(LOCK_EX)`, to guarantee the integrity of
+the data with multiple simultaneous updates.
 
 The FileWriter callback is called after the write completes.
 
