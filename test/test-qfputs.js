@@ -58,6 +58,22 @@ module.exports = {
         }, 10);
     },
 
+    'fputs should not clobber write-only files on reopen': function(t) {
+        var line1 = "test line " + uniqid() + "\n";
+        var line2 = "test line " + uniqid() + "\n";
+        var self = this;
+        fp = new Fputs(new Fputs.FileWriter(self.tempfile, "w"));
+        fp.fputs(line1);
+        setTimeout(function() {
+            fp.fputs(line2);
+            fp.fflush(function(err) {
+                t.ifError(err);
+                t.equal(fs.readFileSync(self.tempfile), line1 + line2);
+                t.done();
+            });
+        }, 25);
+    },
+
     'fputs should get newline terminated': function(t) {
         var line = "test line " + uniqid();
         this.fp.fputs(line);
