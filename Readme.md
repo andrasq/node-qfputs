@@ -109,4 +109,5 @@ The FileWriter callback is called after the write completes.
 
 ## Notes
 
-- The included Fputs.FileWriter depends on `fs-ext`, which is a C++ extension
+- The included Fputs.FileWriter tries to use `fs-ext`, which is a C++ extension.
+  If fs-ext is not installed, the output file will not be locked for writes.
