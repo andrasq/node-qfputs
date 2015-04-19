@@ -47,6 +47,16 @@ module.exports = {
         t.done();
     },
 
+    'should create writable file with default write mode': function(t) {
+        var fp = new Fputs.FileWriter(this.tempfile);
+        var self = this;
+        fp.write("one\ntwo\n", function(err) {
+            t.ifError(err);
+            t.equals(fs.readFileSync(self.tempfile), "one\ntwo\n");
+            t.done();
+        });
+    },
+
     'fputs should write contents soon': function(t) {
         var line = "test line " + uniqid() + "\n";
         this.fp.fputs(line);
