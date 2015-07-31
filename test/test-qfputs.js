@@ -142,6 +142,25 @@ module.exports = {
         });
     },
 
+    'write should return true if buffer has room': function(t) {
+        var fp = this.fp;
+        var ok = fp.write("test");
+        t.equal(ok, true);
+        t.done();
+    },
+
+    'write should return false if buffer is full': function(t) {
+        var fp = this.fp;
+        var nleft = fp.highWaterMark;
+        while (nleft > 0) {
+            fp.write("xxxxxxxxxxxxxxxxxxxx");
+            nleft -= 20;
+        }
+        var ok = fp.write("test");
+        t.equal(ok, false);
+        t.done();
+    },
+
     'constructor should accept a filename': function(t) {
         var fp = new Fputs(this.tempfile);
         fp.fputs("test");
