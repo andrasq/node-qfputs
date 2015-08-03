@@ -118,6 +118,26 @@ module.exports = {
         });
     },
 
+    'drain should write pending data': function(t) {
+        this.fp.fputs("test 1\n");
+        var self = this;
+        this.fp.drain(0, function(err) {
+            t.ifError(err);
+            t.equal(self.writer.getContents(), "test 1\n");
+            t.done();
+        });
+    },
+
+    'drain should return write errors': function(t) {
+        writer = new Fputs.FileWriter("/nonesuch", "a");
+        fp = new Fputs(writer);
+        fp.write("data");
+        fp.drain(0, function(err) {
+            t.ok(err instanceof Error);
+            t.done();
+        });
+    },
+
     'write should write contents, without newline': function(t) {
         var line = "test line " + uniqid();
         this.fp.write(line);
