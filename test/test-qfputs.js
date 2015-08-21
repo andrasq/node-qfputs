@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0
 
 var fs = require('fs');
+var fse = require('fs-ext');
 
 var Fputs = require('../index.js');
 
@@ -13,8 +14,10 @@ function uniqid( ) {
 module.exports = {
     setUp: function(cb) {
         var tempfile = "/tmp/nodeunit-" + process.pid + ".tmp";
+        var tempfile2 = "/tmp/nodeunit-" + process.pid + "-2.tmp";
         try { fs.unlinkSync(tempfile); } catch (e) {}
         this.tempfile = tempfile;
+        this.tempfile2 = tempfile2;
         this.mockWriter = {
             written: [],
             write: function(str, cb) { this.written.push(str); cb(); },
@@ -34,6 +37,7 @@ module.exports = {
 
     tearDown: function(cb) {
         try { fs.unlinkSync(this.tempfile); } catch (e) {}
+        try { fs.unlinkSync(this.tempfile2); } catch (e) {}
         cb();
     },
 
@@ -219,6 +223,56 @@ module.exports = {
             t.ifError(err);
             var contents = "" + self.writer.getContents(tempfile);
             t.equals(contents, expect);
+            t.done();
+        });
+    },
+
+    'FileWriter.renameFile should rename file': function(t) {
+        var self = this;
+        fs.writeFileSync(this.tempfile, "test");
+        Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, function(err) {
+            t.equals(fs.readFileSync(self.tempfile2).toString(), "test");
+            t.done();
+        });
+    },
+
+    'FileWriter.renameFile should pause N ms': function(t) {
+        var self = this;
+        fs.writeFileSync(this.tempfile, "test2");
+        var t1 = Date.now();
+        t.expect(1);
+        Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, 66, function(err) {
+            t.ok(Date.now() >= t1 + 66);
+            t.done();
+        });
+    },
+
+    'FileWriter.renameFile should return EEXIST error, not pause and not overwrite if target already exists': function(t) {
+        var self = this;
+        fs.writeFileSync(this.tempfile, "test3a");
+        fs.writeFileSync(this.tempfile2, "test3b");
+        var t1 = Date.now();
+        t.expect(4);
+        Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, 66, function(err, ret) {
+            t.ok(Date.now() < t1 + 5);
+            t.ok(err instanceof Error);
+            t.ok(err.message.indexOf('EEXIST') === 0);
+            t.equal(fs.readFileSync(self.tempfile2), "test3b");
+            t.done();
+        });
+    },
+
+    'FileWriter.renameFile should wait for ongoing write to finish': function(t) {
+        fs.writeFileSync(this.tempfile, "test4");
+        var fd = fs.openSync(this.tempfile, 'r');
+        fse.flockSync(fd, 'ex') ;
+        var t1 = Date.now();
+        setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 125);
+        var self = this;
+        t.expect(2);
+        Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
+            t.ok(Date.now() >= t1 + 125);
+            t.equal(fs.readFileSync(self.tempfile2).toString(), "test4");
             t.done();
         });
     },
