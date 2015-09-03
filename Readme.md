@@ -82,6 +82,10 @@ Wait for all buffered data to be written.
 If write errors occurred since the last call to fflush or drain, the callback
 will be called with first write error, and the error state cleared.
 
+### renameFile( oldName, newName, [waitMs,] callback(err) )
+
+Convenience function, exposes writable.renameFile if writable is a FileWriter.
+
 ## Helper Classes
 
 ### Fputs.FileWriter
@@ -111,6 +115,13 @@ under an exclusive write lock, `flock(LOCK_EX)`, to guarantee the integrity of
 the data with multiple simultaneous updates.
 
 The FileWriter callback is called after the write completes.
+
+### renameFile( oldName, newName, [waitMs,] callback(err) )
+
+Rename the logfile and wait for writes to settle.  It is assumed that new
+writes can start for only at most `waitMs` milliseconds before the writers
+reopen the old filename.  Times out if a write takes longer than
+fp.mutexTimeout seconds (5 sec default).
 
 ## Notes
 

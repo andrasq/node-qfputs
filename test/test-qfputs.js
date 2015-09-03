@@ -262,6 +262,12 @@ module.exports = {
         });
     },
 
+    'should expose FileWriter.renameFile on fputs instances': function(t) {
+        var fp = new Fputs(this.fileWriter);
+        t.equals(Fputs.FileWriter.renameFile, fp.renameFile);
+        t.done();
+    },
+
     'FileWriter.renameFile should wait for ongoing write to finish': function(t) {
         fs.writeFileSync(this.tempfile, "test4");
         var fd = fs.openSync(this.tempfile, 'r');
@@ -273,6 +279,25 @@ module.exports = {
         Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
             t.ok(Date.now() >= t1 + 125);
             t.equal(fs.readFileSync(self.tempfile2).toString(), "test4");
+            t.done();
+        });
+    },
+
+    'FileWriter.renameFile should time out after mutexTimeout': function(t) {
+        fs.writeFileSync(this.tempfile, "test4");
+        var fd = fs.openSync(this.tempfile, 'r');
+        fse.flockSync(fd, 'ex') ;
+        var t1 = Date.now();
+        setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 200);
+        var self = this;
+        t.expect(3);
+        Fputs.FileWriter.mutexTimeout = 125;
+        Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
+            t.ok(err);
+            t.ok(Date.now() >= t1 + 125);
+            t.ok(Date.now() < t1 + 200);
+            // note: node does not exit while fd is locked
+            fse.flockSync(fd, 'un');
             t.done();
         });
     },
