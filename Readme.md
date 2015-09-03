@@ -116,7 +116,7 @@ the data with multiple simultaneous updates.
 
 The FileWriter callback is called after the write completes.
 
-### renameFile( oldName, newName, [waitMs,] callback(err) )
+#### renameFile( oldName, newName, [waitMs,] callback(err) )
 
 Rename the logfile and wait for writes to settle.  It is assumed that new
 writes can start for only at most `waitMs` milliseconds before the writers
