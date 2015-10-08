@@ -6,6 +6,7 @@ var fs = require('fs');
 var fse = require('fs-ext');
 
 var Fputs = require('../index.js');
+var FileWriter = require('../lib/filewriter.js');
 
 function uniqid( ) {
     return Math.floor(Math.random() * 0x100000000).toString(16);
@@ -39,6 +40,26 @@ module.exports = {
         try { fs.unlinkSync(this.tempfile); } catch (e) {}
         try { fs.unlinkSync(this.tempfile2); } catch (e) {}
         cb();
+    },
+
+    'package should be valid json': function(t) {
+        json = require('../package.json');
+        t.done();
+    },
+
+    'should expose FileWriter class': function(t) {
+        t.equal(Fputs.FileWriter, FileWriter);
+        t.done();
+    },
+
+    'should expose FileWriter.renameFile class method': function(t) {
+        t.equal(Fputs.renameFile, FileWriter.renameFile);
+        t.done();
+    },
+
+    'should expose FileWriter.renameFile as an instance method': function(t) {
+        t.equal(this.fileWriter.renameFile, FileWriter.renameFile);
+        t.done();
     },
 
     'fputs should lazy create the logfile': function(t) {
