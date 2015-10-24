@@ -248,6 +248,33 @@ module.exports = {
         });
     },
 
+    'FileWriter.write should write entire string': function(t) {
+        var self = this;
+        this.fileWriter.write("test123", function(err) {
+            t.equal(fs.readFileSync(self.tempfile), "test123");
+            t.done();
+        });
+    },
+
+    'FileWriter.write should limit bytes': function(t) {
+        var self = this;
+        this.fileWriter.write("test123", 5, function(err) {
+            t.equal(fs.readFileSync(self.tempfile), "test1");
+            t.done();
+        });
+    },
+
+    'FileWriter.write should write buffers': function(t) {
+        var self = this;
+        this.fileWriter.write(new Buffer("test123"), function(err) {
+            t.equal(fs.readFileSync(self.tempfile), "test123");
+            self.fileWriter.write(new Buffer("test123"), 5, function(err) {
+                t.equal(fs.readFileSync(self.tempfile), "test123test1");
+                t.done();
+            });
+        });
+    },
+
     'FileWriter.renameFile should rename file': function(t) {
         var self = this;
         fs.writeFileSync(this.tempfile, "test");
