@@ -98,7 +98,7 @@ On initial open the specified openmode is used.  File handles are used for at
 most .05 seconds, then are reopened.  On reopen, files initially opened 'w' or
 'w+' are reopened 'r+' to not overwrite the just written contents.
 
-#### new Fputs.FileWriter( filename, [openmode] )
+#### new Fputs.FileWriter( filename, [openmode|opts] )
 
 Create a FileWriter that will append the named file.  The file is "lazy"
 created/opened on first access.  The default openmode is 'a', append-only.
@@ -108,11 +108,16 @@ created/opened on first access.  The default openmode is 'a', append-only.
 
         fp.fputs("Hello, line!\n");
 
-#### write( string, callback(error, numBytes) )
+If instead of an openmode string an options object is given, the fields are
 
-Write the text to the file, and call callback when done.  Writes are done
-under an exclusive write lock, `flock(LOCK_EX)`, to guarantee the integrity of
-the data with multiple simultaneous updates.
+- `openmode` - file open mode, default 'a'
+- `writesize` - written data target size, default 102400
+
+#### write( data, callback(error, numBytes) )
+
+Write the data to the file, and call callback when done.  Writes are done under an
+exclusive write lock, `flock(LOCK_EX)`, to guarantee the integrity of the data with
+multiple simultaneous updates.  Data can be either an utf8 string or a Buffer.
 
 The FileWriter callback is called after the write completes.
 
