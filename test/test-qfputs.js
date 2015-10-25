@@ -312,8 +312,9 @@ module.exports = {
         var t1 = Date.now();
         setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 125);
         var self = this;
-        t.expect(2);
+        t.expect(3);
         Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
+            t.ifError(err);
             t.ok(Date.now() >= t1 + 125);
             t.equal(fs.readFileSync(self.tempfile2).toString(), "test4");
             t.done();

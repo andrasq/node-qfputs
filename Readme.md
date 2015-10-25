@@ -84,7 +84,7 @@ will be called with first write error, and the error state cleared.
 
 ### renameFile( oldName, newName, [waitMs,] callback(err) )
 
-Convenience function, exposes writable.renameFile if writable is a FileWriter.
+Convenience function, exposes writable.renameFile.
 
 ## Helper Classes
 

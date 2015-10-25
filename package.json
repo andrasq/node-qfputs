@@ -1,6 +1,6 @@
 {
   "name": "qfputs",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "fast bufferd line-at-a-time output",
   "license": "Apache-2.0",
   "repository": {
