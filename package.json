@@ -33,6 +33,7 @@
     "transport"
   ],
   "dependencies": {
+    "aflow": "0.9.3",
     "fs-ext": "0.3.2"
   },
   "devDependencies": {

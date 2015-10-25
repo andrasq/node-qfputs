@@ -125,8 +125,8 @@ The FileWriter callback is called after the write completes.
 
 Rename the logfile and wait for writes to settle.  It is assumed that new
 writes can start for only at most `waitMs` milliseconds before the writers
-reopen the old filename.  Times out if a write takes longer than
-fp.mutexTimeout seconds (5 sec default).
+reopen the old filename.  The FileWriter built-in reopen interval is 50 ms.
+Times out if a write takes longer than fp.mutexTimeout seconds (5 sec default).
 
 ## Notes
 
