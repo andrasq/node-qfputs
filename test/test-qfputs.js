@@ -143,6 +143,19 @@ module.exports = {
         });
     },
 
+    'setOnError handler should report errors before fflush callback runs': function(t) {
+        var writer = new Fputs.FileWriter("/nonesuch", "a");
+        var fp = new Fputs(writer);
+        var error = null;
+        fp.setOnError(function(err) { error = err });
+        fp.write("data");
+        fp.fflush(function(err) {
+            t.ok(!err, "fflush callback should not return error");
+            t.ok(error instanceof Error, "setOnError should have reported the error");
+            t.done();
+        });
+    },
+
     'drain should write pending data': function(t) {
         this.fp.fputs("test 1\n");
         var self = this;

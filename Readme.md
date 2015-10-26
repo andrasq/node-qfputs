@@ -7,7 +7,8 @@ Data is buffered and written in batches in the background.  Uses any
 data writer with a `write()` method taking a callback, eg node write
 streams.
 
-Write errors are reported only to drain() or fflush(), so use them to check.
+Install an error handler with `setOnError()` to be notified of all write errors.
+Otherwise, write errors are reported to drain() or fflush().
 
 For high file write speeds, the built-in `Fputs.FileWriter` can achieve
 throughputs of over 800k / sec mutexed 200-char lines saved to disk.
@@ -70,17 +71,30 @@ Returns true, or false if the buffer is above the highWaterMark.
 ### drain( [maxUnwritten], callback(error) )
 
 Wait for the un-written buffered data to shrink to no more than maxUnwritten
-chars.  If maxUnwritten is omitted, the built-in default of 400 KB is used.
+chars.  If maxUnwritten is omitted, the built-in default of 200 KB is used.
 
-If write errors occurred since the last call to fflush or drain, the callback
+If unreported write errors occurred since the last call to fflush or drain, the callback
 will be called with first write error, the error state cleared.
 
 ### fflush( callback(error) )
 
 Wait for all buffered data to be written.
 
-If write errors occurred since the last call to fflush or drain, the callback
+If unreported write errors occurred since the last call to fflush or drain, the callback
 will be called with first write error, and the error state cleared.
+
+### setOnError( errorHandler(err) )
+
+Call the error handler function on write errors instead of saving them for reprting
+with `drain` or `fflush`.  In case of error the error handler will be called as
+soon as the error is noticed, from the write callback, before the drain/fflush
+callback runs.
+
+If no error handler is installed, the first unreported error is returned in the
+callback of the first `drain` or `fflush` to be called.
+
+If the qfputs object is already in use when the error handler is installed, it can
+be called immediately if there already is a waiting unreported error.
 
 ### renameFile( oldName, newName, [waitMs,] callback(err) )
 
@@ -132,3 +146,58 @@ Times out if a write takes longer than fp.mutexTimeout seconds (5 sec default).
 
 - The included Fputs.FileWriter tries to use `fs-ext`, which is a C++ extension.
   If fs-ext is not installed, the output file will not be locked for writes.
+
+## ChangeLog
+
+### 1.4.0
+
+- setOnError() method
+
+### 1.3.1
+
+- bugfix: invoke callback only once if mutex timeout
+
+### 1.3.0
+
+- refactor renameFile using `aflow.series()`
+- reuse a single filewriter Buffer to spare the process rss
+
+### 1.2.2
+
+- bugfix: use correct mutexTimeout in renameFile
+- fix: do not create empty file in renameFile
+
+### 1.2.1
+
+- expose renameFile as QFputs class method and fp instance methods
+
+### 1.2.0
+
+- FileWriter.renameFile() class method
+
+### 1.1.1
+
+- bugfix: fix drain()
+
+### 1.1.0
+
+- highWaterMark option
+- have write() return false/true depending on whether highWaterMark bytes buffered already
+
+### 1.0.14
+
+- guard against sync() errors in filewriter
+- file filewriter openmode bug
+- close race condition between writers and consumer
+- make work with node-v0.8
+
+### 1.0.9
+
+- explicitly close `fd` when reopening the logfile
+- reopen in `'a'` append mode when writing
+- run even if no compatible `fs-ext` module is installed
+- fix `fflush()` to wait just for own writes
+
+### 1.0.0
+
+- initial version, 2014-09-30
