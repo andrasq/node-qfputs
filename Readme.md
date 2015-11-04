@@ -149,6 +149,10 @@ Times out if a write takes longer than fp.mutexTimeout seconds (5 sec default).
 
 ## ChangeLog
 
+### 1.2.4
+
+- backport renameFile close() race condition fix from 1.3
+
 ### 1.4.0
 
 - setOnError() method
