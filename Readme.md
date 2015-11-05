@@ -45,12 +45,15 @@ string filename.  If a string, an Fputs.FileWriter will be used (see below).
 Options:
 
         writemode:   file open mode to use with a filename writable, default 'a'
-        writesize:   number of chars to write per chunk, default 200k
+        writesize:   number of chars to write per chunk, default 100k
+        highWaterMark:  the number of chars buffered before write returns false, default writesize
 
 ### fputs( line )
 
 Append the line to the file.  If the line is not already newline terminated,
 it will get a newline appended.
+
+Returns true, or false if the buffer is above the highWaterMark.
 
 ### write( string, [callback()] )
 
@@ -61,6 +64,8 @@ The caller is responsible for splitting the bulk data on line boundaries.
 The callback is optional.  If provided, it is called as soon as the data
 is buffered, not when actually written.  Use fflush() to wait for the
 write to complete and check for errors.
+
+Returns true, or false if the buffer is above the highWaterMark.
 
 ### drain( [maxUnwritten], callback(error) )
 
@@ -76,6 +81,10 @@ Wait for all buffered data to be written.
 
 If write errors occurred since the last call to fflush or drain, the callback
 will be called with first write error, and the error state cleared.
+
+### renameFile( oldName, newName, [waitMs,] callback(err) )
+
+Convenience function, exposes writable.renameFile if writable is a FileWriter.
 
 ## Helper Classes
 
@@ -106,6 +115,13 @@ under an exclusive write lock, `flock(LOCK_EX)`, to guarantee the integrity of
 the data with multiple simultaneous updates.
 
 The FileWriter callback is called after the write completes.
+
+#### renameFile( oldName, newName, [waitMs,] callback(err) )
+
+Rename the logfile and wait for writes to settle.  It is assumed that new
+writes can start for only at most `waitMs` milliseconds before the writers
+reopen the old filename.  Times out if a write takes longer than
+fp.mutexTimeout seconds (5 sec default).
 
 ## Notes
 
