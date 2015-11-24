@@ -33,6 +33,8 @@ module.exports = {
         this.writer = this.mockWriter;
         this.fp = new Fputs(this.writer);
 
+        this.nextFd = function nextFd( ) { var fd; fs.closeSync((fd = fs.openSync("/etc/motd", "r"))); return fd };
+
         cb();
     },
 
@@ -250,9 +252,11 @@ module.exports = {
 
     'FileWriter.renameFile should rename file': function(t) {
         var self = this;
+        var fd1 = this.nextFd();
         fs.writeFileSync(this.tempfile, "test");
         Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, function(err) {
             t.equals(fs.readFileSync(self.tempfile2).toString(), "test");
+            t.equal(self.nextFd(), fd1);
             t.done();
         });
     },
@@ -261,9 +265,11 @@ module.exports = {
         var self = this;
         fs.writeFileSync(this.tempfile, "test2");
         var t1 = Date.now();
-        t.expect(1);
+        var fd1 = this.nextFd();
+        t.expect(2);
         Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, 66, function(err) {
             t.ok(Date.now() >= t1 + 66);
+            t.equal(self.nextFd(), fd1);
             t.done();
         });
     },
@@ -272,13 +278,15 @@ module.exports = {
         var self = this;
         fs.writeFileSync(this.tempfile, "test3a");
         fs.writeFileSync(this.tempfile2, "test3b");
+        var fd1 = this.nextFd();
         var t1 = Date.now();
-        t.expect(4);
+        t.expect(5);
         Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, 66, function(err, ret) {
             t.ok(Date.now() < t1 + 5);
             t.ok(err instanceof Error);
             t.ok(err.message.indexOf('EEXIST') === 0);
             t.equal(fs.readFileSync(self.tempfile2), "test3b");
+            t.equal(self.nextFd(), fd1);
             t.done();
         });
     },
@@ -290,36 +298,44 @@ module.exports = {
     },
 
     'FileWriter.renameFile should wait for ongoing write to finish': function(t) {
+        var self = this;
         fs.writeFileSync(this.tempfile, "test4");
+        var fd1 = this.nextFd();
         var fd = fs.openSync(this.tempfile, 'r');
         fse.flockSync(fd, 'ex') ;
         var t1 = Date.now();
         setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 125);
-        var self = this;
-        t.expect(2);
+        t.expect(4);
         Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
-            t.ok(Date.now() >= t1 + 125);
+            t.ifError(err);
             t.equal(fs.readFileSync(self.tempfile2).toString(), "test4");
+            t.ok(Date.now() >= t1 + 125);
+            t.equal(self.nextFd(), fd1);
             t.done();
         });
     },
 
     'FileWriter.renameFile should time out after mutexTimeout': function(t) {
+        var self = this;
         fs.writeFileSync(this.tempfile, "test4");
+        var fd1 = this.nextFd();
+        fs.closeSync(fd1 = fs.openSync("/etc/motd", "r"));
         var fd = fs.openSync(this.tempfile, 'r');
         fse.flockSync(fd, 'ex') ;
         var t1 = Date.now();
-        setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 200);
-        var self = this;
-        t.expect(3);
-        Fputs.FileWriter.mutexTimeout = 125;
-        Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
-            t.ok(err);
-            t.ok(Date.now() >= t1 + 125);
-            t.ok(Date.now() < t1 + 200);
+        t.expect(4);
+        setTimeout(function(){
             // note: node does not exit while fd is locked
             fse.flockSync(fd, 'un');
+            fs.closeSync(fd);
+            t.equal(self.nextFd(), fd1);
             t.done();
+        }, 150);
+        Fputs.FileWriter.mutexTimeout = 75;
+        Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
+            t.ok(err);
+            t.ok(Date.now() >= t1 + 75);
+            t.ok(Date.now() < t1 + (50 + 75) + 10);     // waitMs + mutexTimeout + pad
         });
     },
 }
