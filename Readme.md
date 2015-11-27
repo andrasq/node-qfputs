@@ -1,7 +1,13 @@
 qfputs
 ======
 
-Fast buffered line-at-a-time output, similar to the C/C++ `fputs()`
+Very fast buffered write-combining string and binary data output.
+Similar to [C](http://www.cplusplus.com/reference/cstdio/puts/) or
+[php fputs()](http://php.net/manual/en/function.fputs.php).
+
+The data can be written as newline terminated lines with `fputs`,
+or in bulk with `write`.  Lines, bulk data, strings and Buffers can
+be mixed at will.
 
 Data is buffered and written in batches in the background.  Uses any
 data writer with a `write()` method taking a callback, eg node write
@@ -10,32 +16,35 @@ streams.
 Install an error handler with `setOnError()` to be notified of all write errors.
 Otherwise, write errors are reported to drain() or fflush().
 
-For high file write speeds, the built-in `Fputs.FileWriter` can achieve
-throughputs of over 800k / sec mutexed 200-char lines saved to disk.
+For high file write speeds, the built-in `Fputs.FileWriter` can handle
+over a million 200-byte mutexed writes / second to disk (over 2 mill /sec
+with node-v0.8).
 
-----
-## Summary
 
-        var fs = require('fs');
+Summary
+-------
+
         var Fputs = require('qfputs');
 
-        var fp = new Fputs(fs.createWriteStream("out", "a"));
-        for (var i = 0; i < 10000; i++) {
-            fp.fputs("Hello, line!\n");
+        var fp = new Fputs(process.stdout);
+        for (var i = 0; i < 10; i++) {
+            fp.fputs("Hello, world!\n");
         }
 
         fp.fflush(function(err) {
-            // all done!
+            console.log("All done!");
         });
 
-----
-## Installation
+
+Installation
+------------
 
         npm install git://github.com/andrasq/node-qfputs
         npm test qfputs
 
-----
-## Methods
+
+Methods
+-------
 
 ### new Fputs( writable, [options] )
 
@@ -45,22 +54,24 @@ string filename.  If a string, an Fputs.FileWriter will be used (see below).
 
 Options:
 
-        writemode:   file open mode to use with a filename writable, default 'a'
-        writesize:   number of chars to write per chunk, default 100k
-        highWaterMark:  the number of chars buffered before write returns false, default writesize
+- `writemode`:   file open mode to use with a filename writable, default 'a'
+- `writesize`:   number of chars to write per chunk, default 100k
+- `highWaterMark`:  the number of chars buffered before write returns false, default writesize
 
 ### fputs( line )
 
 Append the line to the file.  If the line is not already newline terminated,
-it will get a newline appended.
+it will get a newline appended like `puts()`.  Line must be a string.
 
 Returns true, or false if the buffer is above the highWaterMark.
 
-### write( string, [callback()] )
+### write( data, [callback()] )
 
-Append the string to the file.  Newline termination is presumed, but not checked.
+Append the data to the file.  Newline termination is presumed, but not checked.
 This call is intended for bulk transport of newline delimited data.
 The caller is responsible for splitting the bulk data on line boundaries.
+Data can be a string of a Buffer.  Separate data chunks will be concatenated
+before being written for higher write speed.
 
 The callback is optional.  If provided, it is called as soon as the data
 is buffered, not when actually written.  Use fflush() to wait for the
@@ -100,7 +111,9 @@ be called immediately if there already is a waiting unreported error.
 
 Convenience function, exposes writable.renameFile.
 
-## Helper Classes
+
+Helper Classes
+--------------
 
 ### Fputs.FileWriter
 
@@ -142,12 +155,29 @@ writes can start for only at most `waitMs` milliseconds before the writers
 reopen the old filename.  The FileWriter built-in reopen interval is 50 ms.
 Times out if a write takes longer than fp.mutexTimeout seconds (5 sec default).
 
-## Notes
 
-- The included Fputs.FileWriter tries to use `fs-ext`, which is a C++ extension.
-  If fs-ext is not installed, the output file will not be locked for writes.
+Notes
+-----
 
-## ChangeLog
+- The included Fputs.FileWriter uses `fs-ext`, which is a C++ extension.
+
+
+ChangeLog
+---------
+
+### 1.5.0
+
+- add support for write() of Buffer data, also mix of Buffer and string
+
+### 1.4.2
+
+- suppress fs.close errors
+- check for errors of final renameFile closeSync
+
+### 1.2.6
+
+- fix double close in renameFile
+- clean up renameFile timeout error handling
 
 ### 1.2.4
 
