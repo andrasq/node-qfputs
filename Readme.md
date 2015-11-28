@@ -170,6 +170,12 @@ Notes
 - The included Fputs.FileWriter uses `fs-ext`, which is a C++ extension.
 
 
+Todo
+----
+
+- maybe FileWriter.getLockedFd should use mutexTimeout?
+
+
 ChangeLog
 ---------
 
@@ -244,9 +250,3 @@ ChangeLog
 ### 1.0.0
 
 - initial version, 2014-09-30
-
-
-Todo
-----
-
-- maybe FileWriter.getLockedFd should use mutexTimeout?
