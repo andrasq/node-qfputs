@@ -1,7 +1,7 @@
 qfputs
 ======
 
-Very fast buffered write-combining string and binary data output.
+Quick write-combining buffered string and binary data output.
 Similar to [C puts()](http://www.cplusplus.com/reference/cstdio/puts/) or
 [php fputs()](http://php.net/manual/en/function.fputs.php).
 
