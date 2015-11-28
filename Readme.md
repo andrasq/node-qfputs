@@ -2,11 +2,11 @@ qfputs
 ======
 
 Very fast buffered write-combining string and binary data output.
-Similar to [C](http://www.cplusplus.com/reference/cstdio/puts/) or
+Similar to [C puts()](http://www.cplusplus.com/reference/cstdio/puts/) or
 [php fputs()](http://php.net/manual/en/function.fputs.php).
 
-The data can be written as newline terminated lines with `fputs`,
-or in bulk with `write`.  Lines, bulk data, strings and Buffers can
+The data can be written as newline terminated lines with `fputs()`,
+or in bulk with `write()`.  Lines, bulk data, strings and Buffers can
 be mixed at will.
 
 Data is buffered and written in batches in the background.  Uses any
@@ -14,7 +14,7 @@ data writer with a `write()` method taking a callback, eg node write
 streams.
 
 Install an error handler with `setOnError()` to be notified of all write errors.
-Otherwise, write errors are reported to drain() or fflush().
+Otherwise, write errors are reported to `drain()` or `fflush()`.
 
 For high file write speeds, the built-in `Fputs.FileWriter` can handle
 over a million 200-byte mutexed writes / second to disk (over 2 mill /sec
@@ -54,14 +54,15 @@ string filename.  If a string, an Fputs.FileWriter will be used (see below).
 
 Options:
 
-- `writemode`:   file open mode to use with a filename writable, default 'a'
-- `writesize`:   number of chars to write per chunk, default 100k
-- `highWaterMark`:  the number of chars buffered before write returns false, default writesize
+- `writemode` - file open mode to use with a filename writable, default 'a'
+- `writesize` - number of chars to write per chunk, default 100k
+- `highWaterMark` - the number of chars buffered before write returns false, default writesize
 
 ### fputs( line )
 
 Append the line to the file.  If the line is not already newline terminated,
-it will get a newline appended like `puts()`.  Line must be a string.
+it will get a newline appended, like C `puts()`.  Line must be a string, else
+will be coerced to a string.
 
 Returns true, or false if the buffer is above the highWaterMark.
 
@@ -70,8 +71,8 @@ Returns true, or false if the buffer is above the highWaterMark.
 Append the data to the file.  Newline termination is presumed, but not checked.
 This call is intended for bulk transport of newline delimited data.
 The caller is responsible for splitting the bulk data on line boundaries.
-Data can be a string of a Buffer.  Separate data chunks will be concatenated
-before being written for higher write speed.
+Data can be a string of a Buffer, else will be coerced to a string.  Data
+items will be concatenated before being written for higher write speed.
 
 The callback is optional.  If provided, it is called as soon as the data
 is buffered, not when actually written.  Use fflush() to wait for the
@@ -82,7 +83,8 @@ Returns true, or false if the buffer is above the highWaterMark.
 ### drain( [maxUnwritten], callback(error) )
 
 Wait for the un-written buffered data to shrink to no more than maxUnwritten
-chars.  If maxUnwritten is omitted, the built-in default of 200 KB is used.
+chars.  If maxUnwritten is omitted, the built-in default of `2 * writesize`
+(200 KB) is used.
 
 If unreported write errors occurred since the last call to fflush or drain, the callback
 will be called with first write error, the error state cleared.
@@ -109,7 +111,7 @@ be called immediately if there already is a waiting unreported error.
 
 ### renameFile( oldName, newName, [waitMs,] callback(err) )
 
-Convenience function, exposes writable.renameFile.
+Convenience function, exposes FileWriter.renameFile.
 
 
 Helper Classes
@@ -235,3 +237,10 @@ ChangeLog
 ### 1.0.0
 
 - initial version, 2014-09-30
+
+
+Todo
+----
+
+- pass options to renameFile(fm, to, [opts|waitMs], cb), to clean up the mutexTimeout mess
+- maybe FileWriter.getLockedFd should use mutexTimeout?
