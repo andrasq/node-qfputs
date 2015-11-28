@@ -176,6 +176,7 @@ ChangeLog
 ### 1.5.0
 
 - add support for write() of Buffer data, also mix of Buffer and string
+- allow options to `renameFile`
 
 ### 1.4.2
 
