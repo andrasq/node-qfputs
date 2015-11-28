@@ -150,13 +150,19 @@ multiple simultaneous updates.  Data can be either an utf8 string or a Buffer.
 
 The FileWriter callback is called after the write completes.
 
-#### renameFile( oldName, newName, [waitMs,] callback(err) )
+#### renameFile( oldName, newName, [options,] callback(err) )
 
 Rename the logfile and wait for writes to settle.  It is assumed that new
 writes can start for only at most `waitMs` milliseconds before the writers
 reopen the old filename.  The FileWriter built-in reopen interval is 50 ms.
-Times out if a write takes longer than fp.mutexTimeout seconds (5 sec default).
+Times out if a write takes longer than `mutexTimeout` seconds (5 sec default).
 
+If `options` is a number it will be understood to mean `waitMs`.
+
+Options:
+
+- `waitMs` - milliseconds to wait for writes to settle (default 50)
+- `mutexTimeout` - milliseconds to allow for an ongoing write to finish (default 5000)
 
 Notes
 -----
@@ -242,5 +248,4 @@ ChangeLog
 Todo
 ----
 
-- pass options to renameFile(fm, to, [opts|waitMs], cb), to clean up the mutexTimeout mess
 - maybe FileWriter.getLockedFd should use mutexTimeout?

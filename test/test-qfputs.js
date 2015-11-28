@@ -387,11 +387,10 @@ module.exports = {
             setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 200);
             var self = this;
             t.expect(3);
-            Fputs.FileWriter.mutexTimeout = 125;
-            Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
+            Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, {mutexTimeout: 125, waitMs: 10}, function(err, ret) {
                 t.ok(err);
                 t.ok(Date.now() >= t1 + 125);
-                t.ok(Date.now() < t1 + 200);
+                t.ok(Date.now() < t1 + 150);
                 // note: node does not exit while fd is locked
                 fse.flockSync(fd, 'un');
                 t.done();
