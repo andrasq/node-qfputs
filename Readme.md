@@ -109,9 +109,9 @@ callback of the first `drain` or `fflush` to be called.
 If the qfputs object is already in use when the error handler is installed, it can
 be called immediately if there already is a waiting unreported error.
 
-### renameFile( oldName, newName, [waitMs,] callback(err) )
+### renameFile( oldName, newName, [options,] callback(err) )
 
-Convenience function, exposes FileWriter.renameFile.
+Convenience function, exposes `FileWriter.renameFile`.
 
 
 Helper Classes
