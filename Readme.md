@@ -209,6 +209,7 @@ ChangeLog
 ### 1.3.0
 
 - refactor renameFile using `aflow.series()`
+- add support for `FileWriter.write()` of Buffer data
 - reuse a single filewriter Buffer to spare the process rss
 
 ### 1.2.2
