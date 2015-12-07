@@ -174,10 +174,15 @@ Todo
 ----
 
 - maybe FileWriter.getLockedFd should use mutexTimeout?
+- getUnwrittenLength() method to return how much is still left to write
 
 
 ChangeLog
 ---------
+
+### 1.6.0
+
+- abort() method
 
 ### 1.5.0
 

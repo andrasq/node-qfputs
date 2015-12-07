@@ -143,6 +143,20 @@ module.exports = {
         });
     },
 
+    'abort should discard unwritten data': function(t) {
+        t.expect(4);
+        this.fp.fputs("test 1\n");
+        t.ok(this.fp._syncing);
+        t.ok(this.fp.datachunks[0]);
+        var self = this;
+        this.fp.abort(function(err) {
+            t.ifError(err);
+            var contents = self.writer.getContents();
+            t.equals(contents, "");
+            t.done();
+        });
+    },
+
     'setOnError handler should report errors before fflush callback runs': function(t) {
         var writer = new Fputs.FileWriter("/nonesuch", "a");
         var fp = new Fputs(writer);
