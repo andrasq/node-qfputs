@@ -96,6 +96,20 @@ Wait for all buffered data to be written.
 If unreported write errors occurred since the last call to fflush or drain, the callback
 will be called with first write error, and the error state cleared.
 
+### abort( callback(error) )
+
+Wait for the current write to finish but discard all other unwritten data.
+
+Any unreported write error will be returned via the callback.
+
+### getUnwrittenLength( )
+
+Return the estimated length of data remaining to be written.
+
+Strings are estimated in characters, Buffers in bytes.  Strings converted to
+Buffers for write-combining also adjust the expected length to keep drain and
+fflush in sync with writes.
+
 ### setOnError( errorHandler(err) )
 
 Call the error handler function on write errors instead of saving them for reprting
@@ -175,7 +189,6 @@ Todo
 
 - maybe FileWriter.getLockedFd should use mutexTimeout?
 - use a stack for fflush callbacks
-- rename vars unwrittenLength -> bufferedLength, str -> data
 
 
 ChangeLog
