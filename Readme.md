@@ -174,7 +174,8 @@ Todo
 ----
 
 - maybe FileWriter.getLockedFd should use mutexTimeout?
-- getUnwrittenLength() method to return how much is still left to write
+- use a stack for fflush callbacks
+- rename vars unwrittenLength -> bufferedLength, str -> data
 
 
 ChangeLog
@@ -182,7 +183,9 @@ ChangeLog
 
 ### 1.6.0
 
-- abort() method
+- abort() method to discard unwritten data and return when last write finishes
+- getUnwrittenLength() method
+- speed up interleaved string-buffer-string writes
 
 ### 1.5.0
 

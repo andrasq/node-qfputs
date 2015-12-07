@@ -170,6 +170,29 @@ module.exports = {
         });
     },
 
+    'getUnwrittenLength': {
+        'should return unwritten chars for strings': function(t) {
+            var self = this;
+            this.fp.write("test\x81\n");
+            t.equal(this.fp.getUnwrittenLength(), 6);
+            this.fp.write("test\x82\n");
+            t.equal(this.fp.getUnwrittenLength(), 12);
+            this.fp.fflush(function(err) {
+                t.equal(self.fp.getUnwrittenLength(), 0);
+                t.done();
+            });
+        },
+
+        'should return unwritten bytes for string followed by buffer': function(t) {
+            var self = this;
+            this.fp.write("test\x81\n");
+            this.fp.write("test\x82\n");
+            this.fp.write(new Buffer("test3\n"));
+            t.equal(this.fp.getUnwrittenLength(), 20);
+            t.done();
+        },
+    },
+
     'drain should write pending data': function(t) {
         this.fp.fputs("test 1\n");
         var self = this;
