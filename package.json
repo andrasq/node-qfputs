@@ -1,6 +1,6 @@
 {
   "name": "qfputs",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "very fast write-combining bufferd output",
   "license": "Apache-2.0",
   "repository": {
@@ -35,10 +35,10 @@
     "transport"
   ],
   "dependencies": {
-    "aflow": "0.9.3",
-    "fs-ext": "0.3.2"
+    "aflow": "0.10.0",
+    "fs-ext": "0.5.0"
   },
   "devDependencies": {
-    "nodeunit": "0.9.0"
+    "qnit": "0.11.0"
   }
 }

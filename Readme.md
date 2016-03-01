@@ -194,6 +194,12 @@ Todo
 ChangeLog
 ---------
 
+### 1.7.0
+
+- upgrade to the faster aflow 0.10.0
+- upgrade to fs-ext 0.5.0 to work with node-v4 and node-v5
+- use qnit for unit tests
+
 ### 1.6.0
 
 - abort() method to discard unwritten data and return when last write finishes
