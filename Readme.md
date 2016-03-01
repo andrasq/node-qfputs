@@ -216,6 +216,10 @@ ChangeLog
 - suppress fs.close errors
 - check for errors of final renameFile closeSync
 
+### 1.2.7
+
+- do not depend on fs-ext, use it only if present (fixes node-v4)
+
 ### 1.2.6
 
 - fix double close in renameFile
