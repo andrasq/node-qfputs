@@ -216,6 +216,10 @@ ChangeLog
 - suppress fs.close errors
 - check for errors of final renameFile closeSync
 
+### 1.2.7
+
+- remove fs-ext as a dependency (but use it if it is installed)
+
 ### 1.2.6
 
 - fix double close in renameFile
