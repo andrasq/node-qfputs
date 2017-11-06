@@ -227,7 +227,7 @@ module.exports = {
     'constructor should accept a writable object': function(t) {
         t.expect(1);
         var self = this;
-        writer = fs.createWriteStream(this.tempfile, "a");
+        writer = fs.createWriteStream(this.tempfile, {flags: "a"});
         var fp = new Fputs(writer);
         fp.write("data");
         fp.fflush(function() {
