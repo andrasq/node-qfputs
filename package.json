@@ -1,6 +1,6 @@
 {
   "name": "qfputs",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "description": "fast bufferd line-at-a-time output",
   "license": "Apache-2.0",
   "repository": {
@@ -17,7 +17,7 @@
     "node": "*"
   },
   "scripts": {
-    "test": "nodeunit"
+    "test": "qnit"
   },
   "keywords": [
     "Andras",
@@ -35,6 +35,6 @@
   "dependencies": {
   },
   "devDependencies": {
-    "nodeunit": "0.9.0"
+    "qnit": "0.18.0"
   }
 }
