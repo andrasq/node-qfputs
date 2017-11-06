@@ -194,6 +194,11 @@ Todo
 ChangeLog
 ---------
 
+### 1.7.1
+
+- upgrade to fs-ext 0.6.0 to fix C++ install warnings
+- test with qnit for real
+
 ### 1.7.0
 
 - upgrade to the faster aflow 0.10.0
@@ -242,6 +247,9 @@ ChangeLog
 - refactor renameFile using `aflow.series()`
 - add support for `FileWriter.write()` of Buffer data
 - reuse a single filewriter Buffer to spare the process rss
+
+### 1.2.3
+- 1.2.x forked from 1.3.0 and newer versions
 
 ### 1.2.2
 
