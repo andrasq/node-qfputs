@@ -17,6 +17,8 @@
     "node": "*"
   },
   "scripts": {
+    "coverage": "nyc --include lib --reporter lcov --reporter text npm test",
+    "clean": "rm -rf .nyc_output/ coverage/ npm-debug.log",
     "test": "qnit"
   },
   "keywords": [
