@@ -198,6 +198,12 @@ ChangeLog
 
 - upgrade to fs-ext 0.6.0 to fix C++ install warnings
 - test with qnit for real
+- fix test createWriteStream to work with newer node
+
+### 1.2.8
+
+- test with qnit
+- fix test createWriteStream to work with newer node
 
 ### 1.7.0
 
