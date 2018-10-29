@@ -1,6 +1,6 @@
 {
   "name": "qfputs",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "fast bufferd line-at-a-time output",
   "license": "Apache-2.0",
   "repository": {
@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "aflow": "0.9.3",
-    "fs-ext": "0.3.2"
+    "fs-ext": "1.2.1"
   },
   "devDependencies": {
     "nodeunit": "0.9.0"
