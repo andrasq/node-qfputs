@@ -3,12 +3,14 @@
   "version": "1.7.2",
   "description": "very fast write-combining bufferd output",
   "license": "Apache-2.0",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/andrasq/node-qfputs"
   },
+
   "homepage": "https://github.com/andrasq/node-qfputs",
-  "main": "index.js",
+  "readme": "see Readme.md in the repo",
   "author": {
     "name": "Andras",
     "url": "http://github.com/andrasq"
@@ -16,31 +18,24 @@
   "engines": {
     "node": "*"
   },
-  "scripts": {
-    "coverage": "nyc --include lib --reporter lcov --reporter text npm test",
-    "clean": "rm -rf .nyc_output/ coverage/ npm-debug.log",
-    "test": "qnit"
-  },
   "keywords": [
-    "Andras",
-    "fputs",
-    "very fast",
-    "fast",
-    "buffered",
-    "line",
-    "binary",
-    "Buffer",
-    "output",
-    "text",
-    "newline",
-    "delimited",
-    "transport"
+    "Andras", "fputs", "very fast", "fast", "buffered", "line", "binary",
+    "Buffer", "output", "text", "newline", "delimited", "transport"
   ],
+
   "dependencies": {
-    "aflow": "0.10.0",
+    "aflow": "0.10.0"
+  },
+  "optionalDependencies": {
     "fs-ext": "1.2.1"
   },
   "devDependencies": {
     "qnit": "0.25.1"
+  },
+
+  "scripts": {
+    "coverage": "nyc --include lib --reporter lcov --reporter text npm test",
+    "clean": "rm -rf .nyc_output/ coverage/ npm-debug.log",
+    "test": "qnit"
   }
 }
