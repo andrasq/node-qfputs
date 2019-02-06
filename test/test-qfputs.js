@@ -405,7 +405,8 @@ module.exports = {
             var fd = fs.openSync(this.tempfile, 'r');
             fse.flockSync(fd, 'ex') ;
             var t1 = Date.now();
-            setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 125);
+            // protect against setTimeout off-by-one
+            setTimeout(function(){ fse.flockSync(fd, 'un'); fs.closeSync(fd) }, 125 + 1);
             var self = this;
             t.expect(3);
             Fputs.FileWriter.renameFile(this.tempfile, this.tempfile2, function(err, ret) {
