@@ -194,6 +194,9 @@ Todo
 ChangeLog
 ---------
 
+### 1.8.0 - deprecate index.js, make fs-ext an optional dependency
+### 1.7.2 - upgrade fs-ext to 1.2.1 for node-v10, upgrade qnit
+
 ### 1.7.1
 
 - upgrade to fs-ext 0.6.0 to fix C++ install warnings

@@ -5,7 +5,7 @@
 var fs = require('fs');
 var fse = require('fs-ext');
 
-var Fputs = require('../index.js');
+var Fputs = require('../');
 var FileWriter = require('../lib/filewriter.js');
 
 function uniqid( ) {

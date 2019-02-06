@@ -1,9 +1,9 @@
 {
   "name": "qfputs",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "very fast write-combining bufferd output",
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "lib/fputs.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/andrasq/node-qfputs"
