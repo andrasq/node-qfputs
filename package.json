@@ -27,7 +27,7 @@
     "aflow": "0.10.0"
   },
   "optionalDependencies": {
-    "fs-ext": "1.2.1"
+    "fs-ext": "1.3.0"
   },
   "devDependencies": {
     "qnit": "0.25.1"
