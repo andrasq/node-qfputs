@@ -3,7 +3,10 @@
 // Licensed under the Apache License, Version 2.0
 
 var fs = require('fs');
+try {
 var fse = require('fs-ext');
+} catch (e) {
+}
 
 var Fputs = require('../');
 var FileWriter = require('../lib/filewriter.js');
@@ -401,6 +404,8 @@ module.exports = {
         },
 
         'FileWriter.renameFile should wait for ongoing write to finish': function(t) {
+            if (!fse) t.skip();
+
             fs.writeFileSync(this.tempfile, "test4");
             var fd = fs.openSync(this.tempfile, 'r');
             fse.flockSync(fd, 'ex') ;
@@ -418,6 +423,8 @@ module.exports = {
         },
 
         'FileWriter.renameFile should time out after mutexTimeout': function(t) {
+            if (!fse) t.skip();
+
             fs.writeFileSync(this.tempfile, "test4");
             var fd = fs.openSync(this.tempfile, 'r');
             fse.flockSync(fd, 'ex') ;
