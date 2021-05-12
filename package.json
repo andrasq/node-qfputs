@@ -1,6 +1,6 @@
 {
   "name": "qfputs",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "very fast write-combining bufferd output",
   "license": "Apache-2.0",
   "main": "lib/fputs.js",
@@ -24,7 +24,6 @@
   ],
 
   "dependencies": {
-    "aflow": "0.10.0"
   },
   "optionalDependencies": {
     "fs-ext": "1.3.0"
