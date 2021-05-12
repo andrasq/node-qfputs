@@ -11,6 +11,8 @@ var fse = require('fs-ext');
 var Fputs = require('../');
 var FileWriter = require('../lib/filewriter.js');
 
+var fromBuf = eval('process.versions.node >= 7 ? Buffer.from : Buffer');
+
 function uniqid( ) {
     return Math.floor(Math.random() * 0x100000000).toString(16);
 }
@@ -190,7 +192,7 @@ module.exports = {
             var self = this;
             this.fp.write("test\x81\n");
             this.fp.write("test\x82\n");
-            this.fp.write(new Buffer("test3\n"));
+            this.fp.write(fromBuf("test3\n"));
             t.equal(this.fp.getUnwrittenLength(), 20);
             t.done();
         },
@@ -312,7 +314,7 @@ module.exports = {
             var expect = "";
             for (var i=0; i<100; i++) {
                 var line = "test " + i + "\n";
-                fp.write(new Buffer(line));
+                fp.write(fromBuf(line));
                 expect += line;
             }
             fp.fflush(function(err){
@@ -332,7 +334,7 @@ module.exports = {
             var expect = "";
             for (var i=0; i<100; i++) {
                 var line = "test " + i + "\n";
-                fp.write(i % 2 ? new Buffer(line) : line);
+                fp.write(i % 2 ? fromBuf(line) : line);
                 expect += line;
             }
             fp.fflush(function(err){
@@ -356,7 +358,7 @@ module.exports = {
 
         'FileWriter.write should write buffers': function(t) {
             var self = this;
-            this.fileWriter.write(new Buffer("test123"), function(err) {
+            this.fileWriter.write(fromBuf("test123"), function(err) {
                 t.equal(fs.readFileSync(self.tempfile), "test123");
                 t.done();
             });
