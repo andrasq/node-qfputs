@@ -379,7 +379,7 @@ module.exports = {
             var t1 = Date.now();
             t.expect(1);
             Fputs.FileWriter.renameFile(self.tempfile, self.tempfile2, 66, function(err) {
-                t.ok(Date.now() >= t1 + 66);
+                t.ok(Date.now() >= t1 + 66 - 1);
                 t.done();
             });
         },
