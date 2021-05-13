@@ -1,6 +1,6 @@
 {
   "name": "qfputs",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "very fast write-combining bufferd output",
   "license": "Apache-2.0",
   "main": "lib/fputs.js",

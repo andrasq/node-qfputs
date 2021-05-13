@@ -11,7 +11,7 @@ var fse = require('fs-ext');
 var Fputs = require('../');
 var FileWriter = require('../lib/filewriter.js');
 
-var fromBuf = eval('process.versions.node >= 7 ? Buffer.from : Buffer');
+var fromBuf = eval('parseInt(process.versions.node) >= 7 ? Buffer.from : Buffer');
 
 function uniqid( ) {
     return Math.floor(Math.random() * 0x100000000).toString(16);
