@@ -194,7 +194,7 @@ Todo
 ChangeLog
 ---------
 
-### 1.8.1 - remove dependency on `aflow`
+### 1.8.2 - fix Buffer deprecation warnings, remove `aflow` dependency
 ### 1.8.0 - deprecate index.js, make fs-ext an optional dependency
 ### 1.7.2 - upgrade fs-ext to 1.2.1 for node-v10, upgrade qnit
 
